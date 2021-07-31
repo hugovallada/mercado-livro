@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/changelog/01-create-customer-schema.xml
+  - include:
+      file: db/changelog/02-alter-customer-schema-add-id.xml
