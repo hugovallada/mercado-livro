@@ -7,7 +7,6 @@ import com.github.hugovallada.mercadolivro.service.mock.CustomerRequestMockFacto
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions

@@ -1,3 +1,3 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/01-create-customer-schema.yml
+      file: db/changelog/01-create-customer-schema.xml
