@@ -7,11 +7,11 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.aspectj.bridge.Message
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RequestMapping("/api/v1/customers")
@@ -27,6 +27,15 @@ interface CustomerApi {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     fun createCustomer(@Valid @RequestBody request : CustomerRequest) : CustomerResponse
+
+    @ApiOperation(value = "Get all customers", notes = "Get all customers")
+    @ApiResponses(value = [
+        ApiResponse(code = 200, message = "OK", response = CustomerResponse::class, responseContainer = "Page"),
+        ApiResponse(code = 500, message = "Internal Server Error", response = MessageResponse::class)
+    ])
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/all")
+    fun getAllCustomers(@PageableDefault(size = 5) pageable: Pageable) : Page<CustomerResponse>
 
 
 }

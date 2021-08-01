@@ -30,7 +30,7 @@ class CreateCustomerUseCaseTest {
     private lateinit var createCustomerUseCase: CreateCustomerUseCase
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         clearAllMocks()
     }
 

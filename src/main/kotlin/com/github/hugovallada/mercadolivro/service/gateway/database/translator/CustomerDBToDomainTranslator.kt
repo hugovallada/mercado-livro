@@ -2,6 +2,7 @@ package com.github.hugovallada.mercadolivro.service.gateway.database.translator
 
 import com.github.hugovallada.mercadolivro.domain.domain.CustomerDomain
 import com.github.hugovallada.mercadolivro.service.gateway.database.model.CustomerDB
+import org.springframework.data.domain.Page
 
 class CustomerDBToDomainTranslator {
 
@@ -10,5 +11,13 @@ class CustomerDBToDomainTranslator {
             email = customerDB.email,
             id = customerDB.id
     )
+
+    fun translate(pageOfDB: Page<CustomerDB>) : Page<CustomerDomain> {
+        pageOfDB.map {
+            translate(it)
+        }.run {
+            return this
+        }
+    }
 
 }
