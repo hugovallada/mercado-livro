@@ -2,7 +2,9 @@ package com.github.hugovallada.mercadolivro.client.api
 
 import com.github.hugovallada.mercadolivro.client.model.CustomerRequest
 import com.github.hugovallada.mercadolivro.client.model.CustomerResponse
+import com.github.hugovallada.mercadolivro.client.model.CustomerUpdateRequest
 import com.github.hugovallada.mercadolivro.client.model.MessageResponse
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
@@ -37,7 +39,7 @@ interface CustomerApi {
     @GetMapping("/all")
     fun getAllCustomers(@PageableDefault(size = 5) pageable: Pageable): Page<CustomerResponse>
 
-    @ApiOperation(value = "Get customer by email", notes = "Get customer by id")
+    @ApiOperation(value = "Get customer by email", notes = "Get customer by email")
     @ApiResponses(value = [
         ApiResponse(code = 200, message = "OK", response = CustomerResponse::class),
         ApiResponse(code = 404, message = "Not Found", response = MessageResponse::class),
@@ -46,6 +48,17 @@ interface CustomerApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{email}")
     fun getCustomerByEmail(@PathVariable email: String) : CustomerResponse
+
+    @ApiOperation(value = "Update customer by email", notes = "Update customer by email")
+    @ApiResponses(value = [
+        ApiResponse(code = 202, message = "Updated", response = MessageResponse::class),
+        ApiResponse(code = 400, message = "Bad Request", response = MessageResponse::class),
+        ApiResponse(code = 404, message = "Not Found", response = MessageResponse::class),
+        ApiResponse(code = 500, message = "Internal Server Error", response = MessageResponse::class)
+    ])
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping
+    fun updateCustomerByEmail(@Valid @RequestBody updateRequest: CustomerUpdateRequest) : MessageResponse
 
 
 }
