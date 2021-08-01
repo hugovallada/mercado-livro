@@ -6,7 +6,6 @@ import com.github.hugovallada.mercadolivro.client.model.MessageResponse
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import org.aspectj.bridge.Message
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -26,16 +25,16 @@ interface CustomerApi {
     ])
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    fun createCustomer(@Valid @RequestBody request : CustomerRequest) : CustomerResponse
+    fun createCustomer(@Valid @RequestBody request: CustomerRequest): CustomerResponse
 
     @ApiOperation(value = "Get all customers", notes = "Get all customers")
     @ApiResponses(value = [
-        ApiResponse(code = 200, message = "OK", response = CustomerResponse::class, responseContainer = "Page"),
+        ApiResponse(code = 200, message = "OK", response = CustomerResponse::class, responseContainer = "List"),
         ApiResponse(code = 500, message = "Internal Server Error", response = MessageResponse::class)
     ])
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/all")
-    fun getAllCustomers(@PageableDefault(size = 5) pageable: Pageable) : Page<CustomerResponse>
+    fun getAllCustomers(@PageableDefault(size = 5) pageable: Pageable): Page<CustomerResponse>
 
 
 }
