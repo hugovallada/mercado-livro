@@ -17,5 +17,7 @@ class CustomerDomainMockFactory {
             id = 1, name = "Customer", email = "customer@email.com"
     )
 
+    fun buildValidPageableOfCustomerDomainFull() : Page<CustomerDomain> = PageImpl(listOf(buildValidCustomerDomainFull()))
+
 
 }

@@ -2,6 +2,7 @@ package com.github.hugovallada.mercadolivro.service.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.hugovallada.mercadolivro.domain.usecase.CreateCustomerUseCase
+import com.github.hugovallada.mercadolivro.domain.usecase.GetAllCustomersUseCase
 import com.github.hugovallada.mercadolivro.service.error.AlreadyExistsException
 import com.github.hugovallada.mercadolivro.service.mock.CustomerDomainMockFactory
 import com.github.hugovallada.mercadolivro.service.mock.CustomerRequestMockFactory
@@ -33,6 +34,9 @@ class CreateControllerTest {
     @MockkBean
     private lateinit var createCustomerUseCase: CreateCustomerUseCase
 
+    @MockkBean
+    private lateinit var getAllCustomersUseCase: GetAllCustomersUseCase
+
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -42,7 +46,7 @@ class CreateControllerTest {
     private val apiPath = "/api/v1/customers"
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         clearAllMocks()
     }
 
