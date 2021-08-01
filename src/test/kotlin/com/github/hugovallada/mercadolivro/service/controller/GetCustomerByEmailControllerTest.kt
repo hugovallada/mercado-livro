@@ -5,6 +5,7 @@ import com.github.hugovallada.mercadolivro.domain.translator.CustomerDomainToRes
 import com.github.hugovallada.mercadolivro.domain.usecase.CreateCustomerUseCase
 import com.github.hugovallada.mercadolivro.domain.usecase.GetAllCustomersUseCase
 import com.github.hugovallada.mercadolivro.domain.usecase.GetCustomerByEmailUseCase
+import com.github.hugovallada.mercadolivro.service.error.NotFoundException
 import com.github.hugovallada.mercadolivro.service.mock.CustomerDomainMockFactory
 import com.github.hugovallada.mercadolivro.service.mock.MessageResponseMockFactory
 import com.ninjasquad.springmockk.MockkBean
@@ -20,14 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.nio.charset.StandardCharsets.UTF_8
 
 @ExtendWith(MockKExtension::class)
 @WebMvcTest(CustomerController::class)
-class GetAllCustomerControllerTest {
+class GetCustomerByEmailControllerTest {
 
     @MockkBean
     private lateinit var createCustomerUseCase: CreateCustomerUseCase
@@ -44,42 +45,60 @@ class GetAllCustomerControllerTest {
     @Autowired
     private lateinit var mapper: ObjectMapper
 
-    private val apiPath = "/api/v1/customers/all"
+    private val apiPath = "/api/v1/customers/{email}"
 
     @BeforeEach
     fun setUp() {
         clearAllMocks()
     }
 
-
     @Test
-    fun `should return a pageable of customers`() {
-        val domain = CustomerDomainMockFactory().buildValidPageableOfCustomerDomainFull()
-        val responsePage = CustomerDomainToResponseTranslator().translate(domain)
+    fun `should return a customer response with a ok status`() {
+        val customerDomain = CustomerDomainMockFactory().buildValidCustomerDomainFull()
+        val customerResponse = CustomerDomainToResponseTranslator().translate(customerDomain)
 
-        every { getAllCustomersUseCase.execute(any()) } returns domain
+        every { getCustomerByEmailUseCase.execute(any()) } returns customerDomain
 
-        mockMvc.perform(MockMvcRequestBuilders.get(apiPath)
+        mockMvc.perform(get(apiPath, "email@email.com")
                 .contentType(APPLICATION_JSON_VALUE)
                 .characterEncoding(UTF_8.name()))
                 .andExpect(status().isOk)
                 .andDo(print())
                 .andReturn().run {
-                    response.contentAsString.shouldBe(mapper.writeValueAsString(responsePage))
+                    response.contentAsString.shouldBe(mapper.writeValueAsString(customerResponse))
                 }
 
-        verify(exactly = 1) { getAllCustomersUseCase.execute(any()) }
+        verify(exactly = 1) { getCustomerByEmailUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `should return a message response with not found status when the email can't be found`() {
+        val errorMessage = "Can't find a customer with this email"
+        val notFoundException = NotFoundException(errorMessage)
+        val messageResponse = MessageResponseMockFactory().buildNotFoundMessageResponse(errorMessage)
+
+
+        every { getCustomerByEmailUseCase.execute(any()) } throws notFoundException
+
+        mockMvc.perform(get(apiPath, "email@email.com")
+                .contentType(APPLICATION_JSON_VALUE)
+                .characterEncoding(UTF_8.name()))
+                .andExpect(status().isNotFound)
+                .andDo(print())
+                .andReturn().run {
+                    response.contentAsString.shouldBe(mapper.writeValueAsString(messageResponse))
+                }
+
+        verify(exactly = 1) { getCustomerByEmailUseCase.execute(any()) }
     }
 
     @Test
     fun `should return a message response with an internal server error status when an unknown exception happens`() {
-        val errorMessage = "Internal Server Error"
-        val unknownException = RuntimeException(errorMessage)
         val messageResponse = MessageResponseMockFactory().buildInternalServerErrorMessageResponse()
 
-        every { getAllCustomersUseCase.execute(any()) } throws unknownException
+        every { getCustomerByEmailUseCase.execute(any()) } throws RuntimeException("internal server error")
 
-        mockMvc.perform(MockMvcRequestBuilders.get(apiPath)
+        mockMvc.perform(get(apiPath, "email@email.com")
                 .contentType(APPLICATION_JSON_VALUE)
                 .characterEncoding(UTF_8.name()))
                 .andExpect(status().isInternalServerError)
@@ -88,6 +107,6 @@ class GetAllCustomerControllerTest {
                     response.contentAsString.shouldBe(mapper.writeValueAsString(messageResponse))
                 }
 
-        verify(exactly = 1) { getAllCustomersUseCase.execute(any()) }
+        verify(exactly = 1) { getCustomerByEmailUseCase.execute(any()) }
     }
 }

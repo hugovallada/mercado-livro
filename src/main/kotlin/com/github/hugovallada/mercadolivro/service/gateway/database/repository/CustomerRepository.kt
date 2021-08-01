@@ -16,4 +16,6 @@ interface CustomerRepository : JpaRepository<CustomerDB, Long> {
     @Query("Select * from customer", nativeQuery = true)
     fun getAll(pageable: Pageable) : Page<CustomerDB>
 
+    fun findByEmail(email: String) : CustomerDB?
+
 }

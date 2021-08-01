@@ -7,6 +7,7 @@ import com.github.hugovallada.mercadolivro.domain.translator.CustomerDomainToRes
 import com.github.hugovallada.mercadolivro.domain.translator.CustomerRequestToDomainTranslator
 import com.github.hugovallada.mercadolivro.domain.usecase.CreateCustomerUseCase
 import com.github.hugovallada.mercadolivro.domain.usecase.GetAllCustomersUseCase
+import com.github.hugovallada.mercadolivro.domain.usecase.GetCustomerByEmailUseCase
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.validation.annotation.Validated
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Validated
 class CustomerController(private val createCustomerUseCase: CreateCustomerUseCase,
-                         private val getAllCustomersUseCase: GetAllCustomersUseCase) : CustomerApi {
+                         private val getAllCustomersUseCase: GetAllCustomersUseCase,
+                         private val getCustomerByEmailUseCase: GetCustomerByEmailUseCase) : CustomerApi {
 
     override fun createCustomer(request: CustomerRequest): CustomerResponse {
         val domain = CustomerRequestToDomainTranslator().translate(request)
@@ -26,6 +28,12 @@ class CustomerController(private val createCustomerUseCase: CreateCustomerUseCas
 
     override fun getAllCustomers(pageable: Pageable): Page<CustomerResponse> {
         getAllCustomersUseCase.execute(pageable).run {
+            return CustomerDomainToResponseTranslator().translate(this)
+        }
+    }
+
+    override fun getCustomerByEmail(email: String): CustomerResponse {
+        getCustomerByEmailUseCase.execute(email).run {
             return CustomerDomainToResponseTranslator().translate(this)
         }
     }

@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
+import javax.validation.constraints.NotBlank
 
 @RequestMapping("/api/v1/customers")
 interface CustomerApi {
@@ -35,6 +36,16 @@ interface CustomerApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/all")
     fun getAllCustomers(@PageableDefault(size = 5) pageable: Pageable): Page<CustomerResponse>
+
+    @ApiOperation(value = "Get customer by email", notes = "Get customer by id")
+    @ApiResponses(value = [
+        ApiResponse(code = 200, message = "OK", response = CustomerResponse::class),
+        ApiResponse(code = 404, message = "Not Found", response = MessageResponse::class),
+        ApiResponse(code = 500, message = "Internal Server Error", response = MessageResponse::class)
+    ])
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{email}")
+    fun getCustomerByEmail(@PathVariable email: String) : CustomerResponse
 
 
 }

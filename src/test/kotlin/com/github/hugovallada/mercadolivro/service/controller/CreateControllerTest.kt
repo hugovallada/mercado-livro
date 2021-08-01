@@ -3,6 +3,7 @@ package com.github.hugovallada.mercadolivro.service.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.hugovallada.mercadolivro.domain.usecase.CreateCustomerUseCase
 import com.github.hugovallada.mercadolivro.domain.usecase.GetAllCustomersUseCase
+import com.github.hugovallada.mercadolivro.domain.usecase.GetCustomerByEmailUseCase
 import com.github.hugovallada.mercadolivro.service.error.AlreadyExistsException
 import com.github.hugovallada.mercadolivro.service.mock.CustomerDomainMockFactory
 import com.github.hugovallada.mercadolivro.service.mock.CustomerRequestMockFactory
@@ -36,6 +37,9 @@ class CreateControllerTest {
 
     @MockkBean
     private lateinit var getAllCustomersUseCase: GetAllCustomersUseCase
+
+    @MockkBean
+    private lateinit var getCustomerByEmailUseCase: GetCustomerByEmailUseCase
 
     @Autowired
     private lateinit var mockMvc: MockMvc

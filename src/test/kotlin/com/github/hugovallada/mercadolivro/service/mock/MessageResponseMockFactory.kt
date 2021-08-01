@@ -17,4 +17,9 @@ class MessageResponseMockFactory {
             code = 500, message = "Internal Server Error"
     )
 
+    fun buildNotFoundMessageResponse(error: String) = MessageResponse(
+            code = 404, message = "Not Found",
+            errors = listOf(error)
+    )
+
 }
