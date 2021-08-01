@@ -4,13 +4,13 @@ import com.github.hugovallada.mercadolivro.service.gateway.database.repository.C
 import com.github.hugovallada.mercadolivro.service.gateway.database.translator.CustomerDBToDomainTranslator
 import com.github.hugovallada.mercadolivro.service.mock.CustomerDBMockFactory
 import com.github.hugovallada.mercadolivro.service.mock.CustomerDomainMockFactory
+import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -39,7 +39,7 @@ class PersistCustomerGatewayTest {
         every { customerRepository.save(any()) } returns customerDB
 
         persistCustomerGateway.execute(entryCustomerDomain).run {
-            assertEquals(customerDomain, this)
+            this.shouldBe(customerDomain)
         }
 
         verify(exactly = 1) { customerRepository.save(any()) }
@@ -56,7 +56,7 @@ class PersistCustomerGatewayTest {
         assertThrows<RuntimeException> {
             persistCustomerGateway.execute(customerDomain)
         }.run {
-            assertEquals(internalErrorException.message, message)
+            message.shouldBe(internalErrorException.message)
         }
 
         verify(exactly = 1) { customerRepository.save(any()) }

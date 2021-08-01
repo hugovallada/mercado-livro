@@ -8,4 +8,8 @@ class CustomerRequestMockFactory {
             name = "Customer", email = "customer@email.com"
     )
 
+    fun buildInvalidCustomerRequest() = CustomerRequest(
+            name = "", email = "customer"
+    )
+
 }

@@ -2,14 +2,13 @@ package com.github.hugovallada.mercadolivro.service.gateway.database.impl
 
 import com.github.hugovallada.mercadolivro.service.gateway.database.repository.CustomerRepository
 import com.github.hugovallada.mercadolivro.service.mock.CustomerDomainMockFactory
+import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -37,7 +36,7 @@ class ExistsCustomerByEmailGatewayTest {
         every { customerRepository.existsByEmail(any()) } returns true
 
         existsCustomerByEmailGateway.execute(customerDomain).run {
-            assertTrue(this)
+            this.shouldBe(true)
         }
 
         verify(exactly = 1) { customerRepository.existsByEmail(any()) }
@@ -54,7 +53,7 @@ class ExistsCustomerByEmailGatewayTest {
         assertThrows<RuntimeException> {
             existsCustomerByEmailGateway.execute(customerDomain)
         }.run {
-            assertEquals(errorMessage, message)
+            message.shouldBe(errorMessage)
         }
 
         verify(exactly = 1) { customerRepository.existsByEmail(any()) }

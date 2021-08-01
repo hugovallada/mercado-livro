@@ -4,6 +4,7 @@ import com.github.hugovallada.mercadolivro.service.error.AlreadyExistsException
 import com.github.hugovallada.mercadolivro.service.gateway.database.ExistsCustomerByEmailGateway
 import com.github.hugovallada.mercadolivro.service.gateway.database.PersistCustomerGateway
 import com.github.hugovallada.mercadolivro.service.mock.CustomerDomainMockFactory
+import io.kotest.matchers.shouldBe
 import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -11,7 +12,6 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -43,7 +43,7 @@ class CreateCustomerUseCaseTest {
         every { persistCustomerGateway.execute(any()) } returns customerDomainFull
 
         createCustomerUseCase.execute(customerDomain).run {
-            assertEquals(customerDomainFull, this)
+            this.shouldBe(customerDomainFull)
         }
 
         verify(exactly = 1) {
@@ -62,7 +62,7 @@ class CreateCustomerUseCaseTest {
         assertThrows<AlreadyExistsException> {
             createCustomerUseCase.execute(customerDomain)
         }.run {
-            assertEquals(errorMessage, message)
+            message.shouldBe(errorMessage)
         }
 
         verify(exactly = 1) { existsCustomerByEmailGateway.execute(any()) }
@@ -80,7 +80,7 @@ class CreateCustomerUseCaseTest {
         assertThrows<java.lang.RuntimeException> {
             createCustomerUseCase.execute(customerDomain)
         }.run {
-            assertEquals(errorMessage, message)
+            message.shouldBe(errorMessage)
         }
 
         verify(exactly = 1) { existsCustomerByEmailGateway.execute(any()) }
@@ -99,7 +99,7 @@ class CreateCustomerUseCaseTest {
         assertThrows<java.lang.RuntimeException> {
             createCustomerUseCase.execute(customerDomain)
         }.run {
-            assertEquals(errorMessage, message)
+            message.shouldBe(errorMessage)
         }
 
         verify(exactly = 1) {
